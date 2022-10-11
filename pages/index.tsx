@@ -8,7 +8,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Typography from "@mui/material/Typography";
 import formatDuration from "date-fns/formatDuration";
 import intervalToDuration from "date-fns/intervalToDuration";
-import type { GetStaticProps, NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { useMemo, useState } from "react";
 const IDS = [
   { id: "66626", descontos: { direto: 0.06 } },
@@ -22,7 +22,13 @@ const HumanDuration = ({ date }: { date: string }) => {
       Array.from(
         formatDuration(
           intervalToDuration({
-            start: new Date(date),
+            start: new Date(
+              +date.slice(6, 10),
+              +date.slice(3, 5) - 1,
+              +date.slice(0, 2),
+              +date.slice(11, 13),
+              +date.slice(14, 16)
+            ),
             end: new Date(),
           }),
           { zero: true }
@@ -50,7 +56,9 @@ interface IndexProps {
     DataAtualizacao: string;
   }>;
 }
-export const getStaticProps: GetStaticProps<IndexProps> = async (context) => {
+export const getServerSideProps: GetServerSideProps<IndexProps> = async (
+  context
+) => {
   interface APIResponse {
     resultado: {
       Marca: string;
@@ -106,7 +114,7 @@ const Index: NextPage<IndexProps> = ({ postos }) => {
           key={posto.id}
           secondaryAction={
             <Box sx={{ textAlign: "right" }}>
-              {posto.PrecoFinal}
+              <Typography>{posto.PrecoFinal}</Typography>
 
               <Typography
                 sx={{ display: "block" }}
@@ -121,7 +129,7 @@ const Index: NextPage<IndexProps> = ({ postos }) => {
         >
           <ListItemAvatar>
             <Avatar
-              alt={posto.Nome}
+              alt={posto.Marca}
               src={`/static/images/${posto.Marca.toLocaleLowerCase()}.png`}
               variant="rounded"
               imgProps={{
@@ -132,7 +140,7 @@ const Index: NextPage<IndexProps> = ({ postos }) => {
             />
           </ListItemAvatar>
           <ListItemText
-            primary={posto.Nome}
+            primary={`${posto.Marca} ${posto.Nome}`}
             secondary={
               <HumanDuration date={posto.DataAtualizacao}></HumanDuration>
             }
