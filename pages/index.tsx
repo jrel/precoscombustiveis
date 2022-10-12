@@ -108,14 +108,14 @@ export const getServerSideProps: GetServerSideProps<IndexProps> = async (
 
 const Index: NextPage<IndexProps> = ({ postos }) => {
   return (
-    <List>
+    <List sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}>
       {postos.map((posto) => (
         <ListItem
           key={posto.id}
+          alignItems="flex-start"
           secondaryAction={
             <Box sx={{ textAlign: "right" }}>
               <Typography>{posto.PrecoFinal}</Typography>
-
               <Typography
                 sx={{ display: "block" }}
                 component="span"
@@ -140,7 +140,11 @@ const Index: NextPage<IndexProps> = ({ postos }) => {
             />
           </ListItemAvatar>
           <ListItemText
-            primary={`${posto.Marca} ${posto.Nome}`}
+            primary={
+              <>
+         {posto.Nome}
+              </>
+            }
             secondary={
               <HumanDuration date={posto.DataAtualizacao}></HumanDuration>
             }
@@ -157,5 +161,5 @@ function precoCastToNumber(Preco: string) {
   return +Preco.replace(" €/litro", "").replace(",", ".");
 }
 function precoCastToString(Preco: number) {
-  return Preco.toFixed(3) + " €/litro";
+  return Preco.toFixed(3)
 }
